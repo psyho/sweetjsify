@@ -1,55 +1,70 @@
 var transformTools = require('browserify-transform-tools');
 var sourceMap = require('convert-source-map');
-var extend = require('underscore').extend;
+var _ = require('underscore');
 
 var defaults = {
-  sourceMap: false,
+  sourceMap: true,
   readableNames: true,
   modules: [],
 };
 
 var useMacros = /"use macros"|'use macros'/;
 
-var options = {
-  includeExtensions: [".js", ".sjs"]
-};
+function fileUsesMacros(content) {
+  return useMacros.test(content);
+}
 
-module.exports = transformTools.makeStringTransform(
-  "sweetjsify",
-  options,
-  function (content, transformOptions, done) {
-    var filename = transformOptions.file;
-    var config = transformOptions.config || {};
-    var modules = config.modules || [];
-    var sweet = require('sweet.js');
+function loadModules(modules, done) {
+  var sweet = require('sweet.js');
 
-    if(!useMacros.test(content)) {
-      return done(null, content);
-    }
-
-    try {
-      modules.forEach(function(mod) {
-        sweet.loadMacro(mod);
-      });
-    } catch(e) {
-      return done('Error while loading modules:' + filename + '\n' + e);
-    }
-
-    var opts = extend({filename: filename}, defaults, config);
-    var result;
-    delete opts.modules;
-    try {
-      result = sweet.compile(content, opts);
-    } catch(e) {
-      return done('Error in file: ' + filename + '\n' + e);
-    }
-
-    if(config.sourceMap) {
-      var map = sourceMap.fromJSON(result.sourceMap);
-      map.sourcemap.sourcesContent = [buffer];
-      done(null, result.code + '\n' + map.toComment());
-    } else {
-      done(null, result.code);
-    }
+  try {
+    modules.forEach(function(mod) {
+      sweet.loadMacro(mod);
+    });
+  } catch(e) {
+    done('Error while loading modules:\n' + e);
+    return;
   }
-);
+
+  return sweet;
+}
+
+function compile(sweet, config, done) {
+  var opts = _.omit(config, 'modules');
+  try {
+    return sweet.compile(config.content, opts);
+  } catch(e) {
+    done('Error in file: ' + config.filename + '\n' + e);
+  }
+}
+
+function addSourceMap(result, config, done) {
+  if(config.sourceMap) {
+    var map = sourceMap.fromJSON(result.sourceMap);
+    map.sourcemap.sourcesContent = [config.content];
+    done(null, result.code + '\n' + map.toComment());
+  } else {
+    done(null, result.code);
+  }
+}
+
+function sweetjsify(content, transformOptions, done) {
+  var opts = _.extend({filename: transformOptions.file, content: content},
+                    defaults,
+                    transformOptions.config);
+
+  if(!fileUsesMacros(content)) {
+    return done(null, content);
+  }
+
+  var sweet = loadModules(opts.modules, done);
+  if(!sweet) { return; }
+
+  var result = compile(sweet, opts, done);
+  if(!result) { return; }
+
+  addSourceMap(result, opts, done);
+}
+
+var options = { includeExtensions: [".js", ".sjs"] };
+module.exports = transformTools.makeStringTransform("sweetjsify", options, sweetjsify);
