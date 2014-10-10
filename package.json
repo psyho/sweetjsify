@@ -19,5 +19,11 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/psyho/sweetjsify/issues"
+  },
+  "dependencies": {
+    "browserify-transform-tools": "~1.2.1",
+    "underscore": "~1.7.0",
+    "convert-source-map": "~0.4.1",
+    "sweet.js": "~0.7.1"
   }
 }

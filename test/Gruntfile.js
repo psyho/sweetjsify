@@ -1,3 +1,5 @@
+var sweetjsify = require('../index');
+
 module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
@@ -6,7 +8,7 @@ module.exports = function(grunt) {
           'build/build.js': ['src/hello.js'],
         },
         options: {
-          transform: [],
+          transform: [sweetjsify],
         }
       }
     },

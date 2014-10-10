@@ -1,1 +1,3 @@
-console.log('GREAT SUCCESS');
+"use macros";
+
+hello
