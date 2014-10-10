@@ -1,0 +1,14 @@
+{
+  "name": "sweetjsify-example",
+  "version": "0.0.0",
+  "description": "Example of sweetjsify usage",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Adam Pohorecki <adam@pohorecki.pl>",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-browserify": "~3.0.1",
+    "grunt-contrib-clean": "~0.6.0"
+  }
+}

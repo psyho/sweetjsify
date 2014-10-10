@@ -4,6 +4,7 @@
   "description": "Sweet.js transform for Browserify",
   "main": "index.js",
   "scripts": {
+    "test": "./test.sh"
   },
   "repository": {
     "type": "git",
