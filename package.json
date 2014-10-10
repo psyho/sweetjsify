@@ -1,0 +1,22 @@
+{
+  "name": "sweetjsify",
+  "version": "0.0.1",
+  "description": "Sweet.js transform for Browserify",
+  "main": "index.js",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/psyho/sweetjsify.git"
+  },
+  "keywords": [
+    "Browserify",
+    "Sweet.js",
+    "macros"
+  ],
+  "author": "Adam Pohorecki <adam@pohorecki.pl>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/psyho/sweetjsify/issues"
+  }
+}
