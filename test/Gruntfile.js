@@ -3,6 +3,11 @@ var sweetjsify = require('../index');
 module.exports = function(grunt) {
   grunt.initConfig({
     browserify: {
+      options: {
+        browserifyOptions: {
+          debug: false,
+        },
+      },
       dist: {
         files: {
           'build/build.js': ['src/hello.js'],
